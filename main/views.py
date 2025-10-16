@@ -8,22 +8,29 @@ import numpy as np
 import json
 
 # =======================================
-# CARGA DEL MODELO AL INICIAR EL SERVIDOR
+# VARIABLES GLOBALES CONTROLADAS
 # =======================================
-try:
-    model = load_model()
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model.to(device)
-except Exception as e:
-    model = None
-    print(f"⚠️ Error al cargar el modelo LSTM: {e}")
+_model = None
+_device = "cuda" if torch.cuda.is_available() else "cpu"
+
+# ==============================
+# FUNCIONES DE UTILIDAD
+# ==============================
+def get_model():
+    """Carga el modelo sólo si aún no está cargado (lazy load)."""
+    global _model
+    if _model is None:
+        print("⚡ Cargando modelo LSTM por primera vez...")
+        _model = load_model()
+        _model.to(_device)
+    return _model
 
 # ==============================
 # PÁGINAS PRINCIPALES
 # ==============================
 def home(request):
-    projects = Project.objects.all().order_by('-created_at')[:3]  # últimos 3 proyectos
-    posts = BlogPost.objects.all().order_by('-created_at')[:2]    # últimos 2 posts
+    projects = Project.objects.all().order_by('-created_at')[:3]
+    posts = BlogPost.objects.all().order_by('-created_at')[:2]
     return render(request, 'main/home.html', {'projects': projects, 'posts': posts})
 
 def portfolio(request):
@@ -66,22 +73,19 @@ def book_detail(request, book_id):
 # ==============================
 def predict_view(request):
     if request.method == "POST":
-        if model is None:
-            return JsonResponse({"error": "El modelo no está cargado."}, status=500)
-
         try:
-            # Si viene como string desde formulario
+            model = get_model()
+
             raw_data = request.POST.get("sequence")
             if raw_data is None:
-                # Si viene desde fetch JSON
                 raw_data = json.loads(request.body).get("sequence")
 
             if isinstance(raw_data, str):
-                sequence = eval(raw_data)  # ⚠️ sólo si controlas el input — mejor usar json.loads en prod
+                sequence = eval(raw_data)  # ⚠️ ojo en producción
             else:
                 sequence = raw_data
 
-            x_input = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0).to(device)
+            x_input = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0).to(_device)
             with torch.no_grad():
                 prediction = model(x_input).item()
 
@@ -91,7 +95,6 @@ def predict_view(request):
             return JsonResponse({"error": str(e)}, status=400)
 
     return JsonResponse({"message": "Usa método POST para enviar datos."})
-
 
 # ==============================
 # DEMO DE PROYECTOS
