@@ -22,8 +22,11 @@ SECRET_KEY = 'django-insecure-a1=7h)xovwi4k@-7n74q0qd8eqap5y#2dy60cpk=ahnrf-#i1p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://portafolioweb-i6ft.onrender.com', '127.0.0.1', 'localhost'] 
-
+ALLOWED_HOSTS = [
+    'portafolioweb-i6ft.onrender.com',  
+    'localhost',
+    '127.0.0.1'
+]
 
 # Application definition
 INSTALLED_APPS = [
