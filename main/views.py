@@ -3,24 +3,24 @@ from .models import Project, BlogPost, Book
 import markdown
 from django.http import JsonResponse
 from .api.model_loader import load_model
-import torch
-import numpy as np
 import json
 
 # =======================================
 # VARIABLES GLOBALES CONTROLADAS
 # =======================================
 _model = None
-_device = "cuda" if torch.cuda.is_available() else "cpu"
+_device = None
 
 # ==============================
 # FUNCIONES DE UTILIDAD
 # ==============================
 def get_model():
     """Carga el modelo sólo si aún no está cargado (lazy load)."""
-    global _model
+    global _model, _device
     if _model is None:
         print("⚡ Cargando modelo LSTM por primera vez...")
+        import torch
+        _device = "cuda" if torch.cuda.is_available() else "cpu"
         _model = load_model()
         _model.to(_device)
     return _model
@@ -75,13 +75,15 @@ def predict_view(request):
     if request.method == "POST":
         try:
             model = get_model()
+            import torch
+            import numpy as np
 
             raw_data = request.POST.get("sequence")
             if raw_data is None:
                 raw_data = json.loads(request.body).get("sequence")
 
             if isinstance(raw_data, str):
-                sequence = eval(raw_data)  # ⚠️ ojo en producción
+                sequence = eval(raw_data)  # ⚠️ en producción mejor usar json.loads
             else:
                 sequence = raw_data
 
