@@ -10,6 +10,9 @@ class Project(models.Model):
     tags = models.CharField(max_length=200, blank=True, null=True)  # filtros por tecnología
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    has_demo = models.BooleanField(default=False, verbose_name="¿Mostrar demo interactiva?")
+    api_url = models.URLField(blank=True, null=True, verbose_name="URL del endpoint (si aplica)")
+
 
     def __str__(self):
         return self.title
@@ -35,6 +38,18 @@ class BlogPost(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    cover = models.ImageField(upload_to='book_covers/', blank=True, null=True)
+    summary_md = models.TextField(help_text="Resumen en formato Markdown")
+    pdf_file = models.FileField(upload_to='book_files/', blank=True, null=True)
+    epub_file = models.FileField(upload_to='book_files/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title

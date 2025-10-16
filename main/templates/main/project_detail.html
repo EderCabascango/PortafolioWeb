@@ -4,11 +4,11 @@
 {% block title %}{{ project.title }} - Portafolio{% endblock %}
 
 {% block content %}
-<!-- Hero / Proyecto -->
+<!-- 🧠 Hero / Proyecto -->
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="row">
-            <!-- Imagen del proyecto -->
+        <div class="row align-items-center">
+            <!-- Imagen -->
             <div class="col-md-6 mb-4">
                 {% if project.image %}
                     <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded shadow-sm">
@@ -16,37 +16,47 @@
                     <img src="{% static 'images/project_placeholder.png' %}" alt="{{ project.title }}" class="img-fluid rounded shadow-sm">
                 {% endif %}
             </div>
-            <!-- Detalles del proyecto -->
+
+            <!-- Descripción -->
             <div class="col-md-6">
                 <h1 class="fw-bold">{{ project.title }}</h1>
-                <p class="mb-3">{{ project.description }}</p>
+                <p class="mb-3 text-muted">{{ project.description }}</p>
 
                 <!-- Herramientas -->
-                <h5>Herramientas:</h5>
+                {% if project.tools_list %}
+                <h5>🧰 Herramientas:</h5>
                 <ul class="list-inline mb-3">
                     {% for tool in project.tools_list %}
                         <li class="list-inline-item badge bg-primary text-light">{{ tool }}</li>
                     {% endfor %}
                 </ul>
+                {% endif %}
 
                 <!-- Tags -->
-                <h5>Tags:</h5>
+                {% if project.tags_list %}
+                <h5>🏷️ Tags:</h5>
                 <ul class="list-inline mb-3">
                     {% for tag in project.tags_list %}
                         <li class="list-inline-item badge bg-secondary">{{ tag }}</li>
                     {% endfor %}
                 </ul>
+                {% endif %}
 
-                <!-- Links -->
-                <div class="mb-3">
+                <!-- Enlaces -->
+                <div class="mt-4">
                     {% if project.github_link %}
                         <a href="{{ project.github_link }}" target="_blank" class="btn btn-dark mx-1">
                             <i class="fab fa-github"></i> GitHub
                         </a>
                     {% endif %}
                     {% if project.demo_link %}
-                        <a href="{{ project.demo_link }}" target="_blank" class="btn btn-primary mx-1">
-                            <i class="fas fa-external-link-alt"></i> Demo
+                        <a href="{{ project.demo_link }}" target="_blank" class="btn btn-outline-primary mx-1">
+                            <i class="fas fa-external-link-alt"></i> Demo Externo
+                        </a>
+                    {% endif %}
+                    {% if project.has_demo %}
+                        <a href="{% url 'project_demo' project.id %}" class="btn btn-primary mx-1">
+                            <i class="fas fa-robot"></i> Probar Demo
                         </a>
                     {% endif %}
                 </div>
@@ -55,19 +65,36 @@
     </div>
 </section>
 
-<!-- Recursos del proyecto -->
-{% if project.resources.all %}
+<!-- 📓 Notebook embebido -->
+{% if project.notebook_url %}
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-4">Recursos del Proyecto</h2>
+        <h2 class="text-center mb-4">📘 Notebook del Proyecto</h2>
+        <div class="ratio ratio-16x9 shadow-sm">
+            <iframe src="{{ project.notebook_url }}" width="100%" height="700px" style="border:none;"></iframe>
+        </div>
+        <p class="text-muted text-center mt-2">
+            *Notebook visualizado desde nbviewer o HTML exportado.
+        </p>
+    </div>
+</section>
+{% endif %}
+
+<!-- 📂 Recursos descargables -->
+{% if project.resources.all %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">📎 Recursos del Proyecto</h2>
         <div class="row">
             {% for resource in project.resources.all %}
             <div class="col-md-4 mb-3">
-                <div class="card shadow-sm">
-                    <div class="card-body">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ resource.name }}</h5>
-                        <p class="card-text">{{ resource.get_resource_type_display }}</p>
-                        <a href="{{ resource.file.url }}" class="btn btn-primary" target="_blank">Ver / Descargar</a>
+                        <p class="card-text text-muted">{{ resource.get_resource_type_display }}</p>
+                        <div class="mt-auto">
+                            <a href="{{ resource.file.url }}" class="btn btn-primary w-100" download>⬇️ Descargar</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,11 +104,13 @@
 </section>
 {% endif %}
 
-<!-- CTA Contacto -->
-<section id="contact" class="py-5 bg-light">
+<!-- 📬 CTA Contacto -->
+<section id="contact" class="py-5 bg-white">
     <div class="container text-center">
         <h2 class="mb-4">¿Quieres colaborar o hablar de proyectos?</h2>
-        <a href="mailto:wladimireder@gmail.com" class="btn btn-primary">Enviar Email</a>
+        <a href="mailto:wladimireder@gmail.com" class="btn btn-primary">
+            <i class="fas fa-envelope"></i> Enviar Email
+        </a>
     </div>
 </section>
 {% endblock %}

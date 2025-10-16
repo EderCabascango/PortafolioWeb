@@ -8,11 +8,13 @@ __pycache__/
 # Environments
 env/
 venv/
+.venv/
 *.env
 
 # Django
 *.sqlite3
 /media/
+staticfiles/
 *.log
 
 # VSCode

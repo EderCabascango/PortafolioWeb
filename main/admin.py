@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, BlogPost, Resource
+from .models import Project, BlogPost, Resource, Book
 
 # Inline para recursos asociados a cada proyecto
 class ResourceInline(admin.TabularInline):
@@ -23,4 +23,10 @@ class BlogPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'created_at', 'updated_at')
     search_fields = ('title',)
     list_filter = ('created_at', 'updated_at')
+    ordering = ('-created_at',)
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at')
+    search_fields = ('title', 'author')
     ordering = ('-created_at',)

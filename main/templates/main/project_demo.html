@@ -1,0 +1,108 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Demo - {{ project.title }}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-4">🎯 Demo Interactiva: {{ project.title }}</h1>
+    <p class="text-muted w-75 mx-auto">
+      Esta demostración permite subir un dataset de prueba o ingresar una secuencia de valores
+      para generar predicciones en tiempo real usando el modelo LSTM.
+    </p>
+
+    <!-- 📊 Formato esperado -->
+    <div class="bg-white shadow-sm rounded p-3 my-4 text-start mx-auto" style="max-width: 700px;">
+      <h5 class="fw-bold mb-2">🧩 Formato esperado del CSV:</h5>
+      <pre class="text-muted small">
+day,sell_price,week,month,quarter,is_weekend,event_name_1_FOODS,event_name_1_HOBBIES,...,sales
+1,2.13,18,5,2,0,0,1,...,23
+2,2.14,18,5,2,0,0,1,...,25
+...
+      </pre>
+      <a href="{% static 'files/test_sample.csv' %}" class="btn btn-outline-primary btn-sm" download>
+        📥 Descargar dataset de ejemplo
+      </a>
+    </div>
+
+    <!-- 📈 Predicción manual -->
+    <h4 class="mt-5">🔢 Predicción rápida</h4>
+    <p class="text-muted">Ingresa una secuencia de ventas (por ejemplo, 28 valores):</p>
+
+    <div class="input-group mb-3 w-50 mx-auto">
+      <input id="sequence" type="text" class="form-control" placeholder="Ej: 12, 13, 15, 16, 18">
+      <button class="btn btn-primary" type="button" onclick="sendPrediction('/api/predict/')">Predecir</button>
+    </div>
+    <h5 class="mt-3">Predicción: <span id="result" class="text-success fw-bold"></span></h5>
+
+    <!-- 📂 Subir CSV -->
+    <h4 class="mt-5">📤 Subir Dataset de Prueba</h4>
+    <form id="csvForm" enctype="multipart/form-data" class="mb-4">
+      <div class="input-group w-50 mx-auto">
+        <input type="file" id="fileInput" name="file" class="form-control" accept=".csv">
+        <button type="submit" class="btn btn-success">Subir y Predecir</button>
+      </div>
+    </form>
+
+    <div id="csvResult" class="mt-4"></div>
+  </div>
+</section>
+
+<script>
+async function sendPrediction(apiUrl) {
+    const seqInput = document.getElementById('sequence').value;
+    const seqArray = seqInput.split(',').map(v => [parseFloat(v.trim())]);
+    const resultEl = document.getElementById('result');
+    resultEl.textContent = '⏳ Calculando...';
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sequence: seqArray })
+        });
+        const data = await response.json();
+        resultEl.textContent = data.prediction ?? `❌ Error: ${data.error}`;
+    } catch (err) {
+        resultEl.textContent = `❌ Error de conexión: ${err.message}`;
+    }
+}
+
+document.getElementById("csvForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fileInput = document.getElementById("fileInput");
+  const resultEl = document.getElementById("csvResult");
+
+  if (!fileInput.files.length) {
+    resultEl.innerHTML = "<p class='text-danger'>⚠️ Por favor selecciona un archivo CSV.</p>";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+  resultEl.innerHTML = "<p class='text-muted'>⏳ Procesando el archivo...</p>";
+
+  try {
+    const response = await fetch("/api/predict_csv/", { method: "POST", body: formData });
+    const data = await response.json();
+
+    if (data.predictions) {
+      const rows = data.predictions.map((val, i) => 
+        `<tr><td>${i+1}</td><td>${val.toFixed(4)}</td></tr>`).join('');
+      resultEl.innerHTML = `
+        <h5 class='mb-3'>✅ Predicciones generadas:</h5>
+        <table class="table table-striped w-50 mx-auto shadow-sm">
+          <thead><tr><th>#</th><th>Predicción</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    } else {
+      resultEl.innerHTML = `<p class='text-danger'>❌ ${data.error || 'Error inesperado'}</p>`;
+    }
+  } catch (err) {
+    resultEl.innerHTML = `<p class='text-danger'>❌ Error de conexión: ${err.message}</p>`;
+  }
+});
+</script>
+{% endblock %}
