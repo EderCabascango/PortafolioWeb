@@ -83,7 +83,7 @@ def predict_view(request):
                 raw_data = json.loads(request.body).get("sequence")
 
             if isinstance(raw_data, str):
-                sequence = eval(raw_data)  # ⚠️ en producción mejor usar json.loads
+                sequence = eval(raw_data)  
             else:
                 sequence = raw_data
 
