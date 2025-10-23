@@ -1,2 +1,1 @@
-web: gunicorn portafolio.wsgi --timeout 120 --workers 2 --threads 2
-
+web: gunicorn portafolio.wsgi --workers 1 --threads 1 --timeout 120 --max-requests 100 --max-requests-jitter 10
