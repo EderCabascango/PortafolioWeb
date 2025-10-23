@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Portafolio - Wladimir Cabascango{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center fw-bold mb-5">Mi Portafolio</h1>
+    <div class="row gy-4">
+        {% for project in projects %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 d-flex flex-row align-items-center p-2">
+                <!-- Imagen lateral -->
+                <div class="flex-shrink-0" style="width: 100px; height: 100px; overflow: hidden; border-radius: 10px;">
+                    {% if project.image %}
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid h-100 w-100 object-fit-cover">
+                    {% else %}
+                        <img src="{% static 'images/project_placeholder.png' %}" alt="{{ project.title }}" class="img-fluid h-100 w-100 object-fit-cover">
+                    {% endif %}
+                </div>
+
+                <!-- Contenido -->
+                <div class="flex-grow-1 ms-3 d-flex flex-column justify-content-between">
+                    <h6 class="fw-bold mb-1">{{ project.title }}</h6>
+                    <p class="small text-muted mb-2">{{ project.description|truncatewords:15 }}</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary btn-sm w-100 mb-2">Ver Detalles</a>
+                        {% if project.github_link %}
+                            <a href="{{ project.github_link }}" target="_blank" class="btn btn-dark btn-sm w-100">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No hay proyectos aún.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

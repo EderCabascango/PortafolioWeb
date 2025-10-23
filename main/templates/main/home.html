@@ -1,0 +1,92 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Home - Wladimir Cabascango{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="text-center py-5 bg-light">
+    <div class="container">
+        <img src="{% static 'images/profile.png' %}" alt="Wladimir Cabascango" class="rounded-circle mb-3" width="180">
+        <h1 class="fw-bold">Wladimir Cabascango</h1>
+        <p class="lead">Data Scientist | Machine Learning | MLOps | Deep Learning Enthusiast</p>
+        <a href="{% url 'portfolio' %}" class="btn btn-primary mx-2">Ver Portafolio</a>
+        <a href="{% url 'blog' %}" class="btn btn-outline-dark mx-2">Leer Blog</a>
+        <a href="{% static 'files/CV_WladimirCabascango.pdf' %}" class="btn btn-success mx-2" download>
+            <i class="fas fa-file-pdf"></i> Descargar CV
+        </a>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Mis Habilidades</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-database fa-3x mb-2 text-primary"></i>
+                <h5>Machine Learning</h5>
+                <p>Modelos predictivos, regresión, clasificación y NLP usando Python y PyTorch.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-server fa-3x mb-2 text-primary"></i>
+                <h5>MLOps & Cloud</h5>
+                <p>Azure ML, Kubernetes, MLflow, pipelines de ML y despliegue de modelos en producción.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-chart-line fa-3x mb-2 text-primary"></i>
+                <h5>Data Visualization</h5>
+                <p>Dashboards interactivos en Power BI, análisis de datos y storytelling con visualizaciones.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Preview Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Proyectos Destacados</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{% static 'images/LSTM_M5.png' %}" class="card-img-top" alt="Proyecto 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Forecast Store 2025</h5>
+                        <p class="card-text">Predicción de ventas usando series de tiempo y ML en Python.</p>
+                        <a href="{% url 'portfolio' %}" class="btn btn-primary">Ver Proyecto</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{% static 'images/Churning_Clientes2.png' %}" class="card-img-top" alt="Proyecto 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Churning Clientes</h5>
+                        <p class="card-text">Modelo predictivo de churn para clientes de telecomunicaciones.</p>
+                        <a href="{% url 'portfolio' %}" class="btn btn-primary">Ver Proyecto</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{% static 'images/Stroke2.png' %}" class="card-img-top" alt="Proyecto 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Stroke Prediction</h5>
+                        <p class="card-text">Modelo predicitivo para detectar posibles accidentes cerebro </p>
+                        <a href="{% url 'portfolio' %}" class="btn btn-primary">Ver Proyecto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Contacto</h2>
+        <p>¿Quieres colaborar o hablar de proyectos? Escríbeme:</p>
+        <a href="mailto:wladimireder@gmail.com" class="btn btn-primary">Enviar Email</a>
+    </div>
+</section>
+{% endblock %}

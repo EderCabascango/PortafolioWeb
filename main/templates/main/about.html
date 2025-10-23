@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Sobre mí - Wladimir Cabascango{% endblock %}
+
+{% block content %}
+<!-- Hero / Header -->
+<section class="text-center py-5 bg-light">
+    <div class="container">
+        <img src="{% static 'images/profile.png' %}" alt="Wladimir Cabascango" class="rounded-circle mb-3" width="180">
+        <h1 class="fw-bold">Wladimir Cabascango</h1>
+        <p class="lead">Data Scientist | ML Engineer | Deep Learning Enthusiast | MLOps Practitioner</p>
+    </div>
+</section>
+
+<!-- Biografía -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Mi Historia</h2>
+        <p class="text-center mx-auto" style="max-width: 800px;">
+            Soy un apasionado de la ciencia de datos y el aprendizaje automático. Me especializo en desarrollar modelos predictivos, trabajar con pipelines de ML, desplegar soluciones en la nube y crear dashboards que transformen datos en decisiones inteligentes.
+            Me gusta aprender constantemente nuevas tecnologías, compartir conocimiento y aplicar la IA para resolver problemas del mundo real.
+        </p>
+    </div>
+</section>
+
+<!-- Habilidades -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Mis Habilidades</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-brain fa-3x mb-2 text-primary"></i>
+                <h5>Machine Learning & AI</h5>
+                <p>Modelos predictivos, NLP, visión por computadora y deep learning con Python y PyTorch.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-cloud fa-3x mb-2 text-primary"></i>
+                <h5>MLOps & Cloud</h5>
+                <p>Azure ML, MLflow, Kubernetes, pipelines de ML y despliegue de modelos en producción.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="fas fa-chart-bar fa-3x mb-2 text-primary"></i>
+                <h5>Data Visualization</h5>
+                <p>Dashboards interactivos en Power BI y análisis de datos para storytelling visual.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contacto / Call to Action -->
+<section id="contact" class="py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Contacto</h2>
+        <p>¿Quieres colaborar o hablar de proyectos? Escríbeme:</p>
+        <a href="mailto:wladimireder@gmail.com" class="btn btn-primary">Enviar Email</a>
+    </div>
+</section>
+{% endblock %}

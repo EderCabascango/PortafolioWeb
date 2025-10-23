@@ -1,0 +1,45 @@
+# =============================
+# ENTORNO VIRTUAL Y CONFIG
+# =============================
+.venv/
+.env
+
+# =============================
+# ARCHIVOS TEMPORALES / CACHE
+# =============================
+__pycache__/
+*.py[cod]
+*.log
+*.pot
+*.pyc
+
+# =============================
+# BASE DE DATOS LOCAL
+# =============================
+db.sqlite3
+
+# =============================
+# ENTORNOS DE DESARROLLO
+# =============================
+.vscode/
+.idea/
+.DS_Store
+
+# =============================
+# ARCHIVOS ESTÁTICOS GENERADOS
+# =============================
+staticfiles/
+media/
+
+# =============================
+# MIGRACIONES DE BACKUP (opcional)
+# =============================
+migrations/__pycache__/
+migrations/*.pyc
+
+# =============================
+# OTROS
+# =============================
+*.bak
+*.swp
+*.swo

@@ -1,0 +1,75 @@
+/* style.css */
+
+/* Body general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Secciones principales */
+section {
+    padding: 60px 0;
+}
+
+/* Cards de portafolio */
+.card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Botones */
+.btn-primary {
+    background-color: #1e3a8a;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    background-color: #111827;
+    color: #fff;
+    text-align: center;
+}
+
+footer a {
+    color: #fff;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #3b82f6;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 2rem;
+}
+
+/* Imágenes circulares */
+img.rounded-circle {
+    border-radius: 50% !important;
+    object-fit: cover;
+}
+
+/* Hover suave en enlaces */
+a:hover {
+    text-decoration: none;
+}
+
+/* Responsive cards en grid */
+@media (max-width: 768px) {
+    .card-body {
+        text-align: center;
+    }
+}

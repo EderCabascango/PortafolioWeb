@@ -1,0 +1,82 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Sobre mí - Wladimir Cabascango{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="text-center mb-4">Sobre mí</h1>
+
+    <!-- CONTENEDOR CENTRADO con ancho limitado -->
+    <div class="d-flex justify-content-center">
+      <div id="aboutCarousel" class="carousel slide mb-4" data-bs-ride="carousel" style="max-width:280px;">
+        <!-- w-auto quita el width:100% del inner -->
+        <div class="carousel-inner w-auto rounded shadow" style="margin:0 auto;">
+          <div class="carousel-item active text-center">
+            <img src="{% static 'images/aboutme1.png' %}"
+                 alt="Foto 1"
+                 style="width:240px !important;height:auto !important;object-fit:contain;border-radius:10px;display:inline-block;" />
+          </div>
+          <div class="carousel-item text-center">
+            <img src="{% static 'images/aboutme2.png' %}"
+                 alt="Foto 2"
+                 style="width:240px !important;height:auto !important;object-fit:contain;border-radius:10px;display:inline-block;" />
+          </div>
+          <div class="carousel-item text-center">
+            <img src="{% static 'images/aboutme3.png' %}"
+                 alt="Foto 3"
+                 style="width:240px !important;height:auto !important;object-fit:contain;border-radius:10px;display:inline-block;" />
+          </div>
+          <div class="carousel-item text-center">
+            <img src="{% static 'images/aboutme4.png' %}"
+                 alt="Foto 4"
+                 style="width:240px !important;height:auto !important;object-fit:contain;border-radius:10px;display:inline-block;" />
+          </div>
+        </div>
+
+        <!-- Flechas -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Siguiente</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Texto -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <p class="text-justify">
+          Soy Wladimir Cabascango, Científico de Datos e Ingeniero en Telecomunicaciones. No llegué a la inteligencia artificial por casualidad, 
+          sino por una necesidad profunda de entender cómo funciona el mundo que nos rodea y cómo los datos pueden ayudarnos a transformarlo.
+        </p>
+        <p class="text-justify">
+          Durante años trabajé en redes, servidores y sistemas, asegurándome de que todo funcione. Pero en algún momento comprendí que lo que más me apasionaba no era solo mantener estructuras, sino darles sentido. 
+          Descubrir patrones ocultos, interpretarlos y convertirlos en soluciones reales se convirtió en el motor de mi trabajo.
+        </p>
+        <p class="text-justify">
+          Creo profundamente que la tecnología no debe ser un privilegio de unos pocos. Mi visión es aportar a un ecosistema en el que la inteligencia artificial y el análisis de datos empoderen a comunidades, productores y emprendedores que muchas veces quedan fuera de la revolución digital. 
+          Así nació FuyuTech, un proyecto que busca conectar a productores de rosas ecuatorianos con el mundo a través de soluciones tecnológicas accesibles y eficientes.
+        </p>
+        <p class="text-justify">
+          Me mueve la curiosidad, el aprendizaje constante y la construcción con sentido. He aprendido que no es necesario esperar validación externa. Lo importante es dar pasos firmes, incluso cuando nadie mira. 
+          Porque es en el silencio, en las madrugadas frente a la pantalla, en las pruebas fallidas y en los pequeños logros diarios, donde se construye un futuro sólido.
+        </p>
+        <p class="text-justify mt-4">
+          No camino solo. Mi mamá, mi hijo y mis amigos son mi motor diario.  
+          Mi madre me recuerda la fuerza que se construye en silencio, mi hijo es la razón por la que cada esfuerzo tiene sentido y mis amigos son esa familia elegida que da fuerza en los días difíciles.  
+          Gracias a ellos avanzo con propósito.
+        </p>
+        <p class="text-justify mb-0">
+          Este espacio no es un escaparate perfecto, es un cuaderno abierto. Aquí guardo aprendizajes, avances, fracasos y sueños. No escribo desde la cima, escribo desde el camino. 
+          Y si mi historia inspira a alguien más a construir la suya, entonces habrá valido la pena.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
