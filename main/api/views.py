@@ -4,8 +4,9 @@ import pandas as pd
 import json
 import torch
 import time
-from .model_loader import load_model
+from .model_loader import get_model    # ✅ usamos get_model en lugar de load_model
 from ..logger import logger  
+
 
 @csrf_exempt
 def predict_lstm(request):
@@ -21,8 +22,11 @@ def predict_lstm(request):
             if not sequence:
                 return JsonResponse({"error": "No sequence provided"}, status=400)
 
+            # Convertimos la secuencia a tensor
             x = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0)
-            model = load_model()
+
+            # ⚡ Carga diferida del modelo
+            model = get_model()
 
             with torch.no_grad():
                 y_pred = model(x).item()
@@ -57,6 +61,7 @@ def predict_csv(request):
             if df.empty:
                 return JsonResponse({"error": "El CSV está vacío"}, status=400)
 
+            # ✅ limitamos tamaño máximo del CSV
             MAX_ROWS = 5000
             if len(df) > MAX_ROWS:
                 df = df.iloc[:MAX_ROWS]
@@ -64,11 +69,12 @@ def predict_csv(request):
             df = df.select_dtypes(include=["number"]).fillna(0)
             tensor_data = torch.tensor(df.values, dtype=torch.float32)
 
-            model = load_model()
+            # ⚡ Carga diferida del modelo
+            model = get_model()
             preds = []
 
             with torch.no_grad():
-                for i in range(len(tensor_data) - 28):
+                for i in range(len(tensor_data) - 28):  # ventana de 28
                     seq = tensor_data[i:i+28].unsqueeze(0)
                     pred = model(seq).item()
                     preds.append(pred)
@@ -76,6 +82,7 @@ def predict_csv(request):
             elapsed = time.time() - start_time
             logger.info(f"✅ Predicción CSV completada ({len(preds)} muestras) en {elapsed:.2f} segundos")
 
+            # devolvemos solo las primeras 50 predicciones para no sobrecargar
             return JsonResponse({"predictions": preds[:50]}, safe=False)
 
         except Exception as e:
@@ -86,5 +93,8 @@ def predict_csv(request):
 
 
 def health_check(request):
-    """Verifica el estado del servidor."""
+    """
+    Verifica el estado del servidor.
+    Ideal para monitoreo en Render.
+    """
     return JsonResponse({"status": "ok"})

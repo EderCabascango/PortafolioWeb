@@ -24,14 +24,13 @@ class LSTMModel(nn.Module):
         return out
 
 # ==============================
-# CARGA LAZY DEL MODELO
+# CARGA DIFERIDA (Lazy Loading)
 # ==============================
-
 _model_cache = None  # ✅ cache global controlada
 
-def load_model():
+def get_model():
     """
-    Carga el modelo LSTM solo cuando se necesita (lazy loading).
+    Carga el modelo LSTM solo cuando se necesita.
     Si ya está cargado, reutiliza la instancia en memoria.
     """
     global _model_cache
