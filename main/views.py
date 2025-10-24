@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Project, BlogPost, Book
 import markdown
 from django.http import JsonResponse
-from .api.model_loader import load_model
+from .api.model_loader import get_model
 import json
 
 # =======================================
@@ -21,7 +21,7 @@ def get_model():
         print("⚡ Cargando modelo LSTM por primera vez...")
         import torch
         _device = "cuda" if torch.cuda.is_available() else "cpu"
-        _model = load_model()
+        _model = get_model()
         _model.to(_device)
     return _model
 

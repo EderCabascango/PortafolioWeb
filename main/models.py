@@ -6,16 +6,19 @@ class Project(models.Model):
     tools = models.CharField(max_length=200)
     github_link = models.URLField(blank=True, null=True)
     demo_link = models.URLField(blank=True, null=True)  # para ver la demo online
-    image = models.ImageField(upload_to='project_images/', blank=True, null=True)
+    
+    # ✅ Ahora solo guarda el nombre del archivo, no una ruta de media
+    image = models.CharField(max_length=255, blank=True, null=True)
+    
     tags = models.CharField(max_length=200, blank=True, null=True)  # filtros por tecnología
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     has_demo = models.BooleanField(default=False, verbose_name="¿Mostrar demo interactiva?")
     api_url = models.URLField(blank=True, null=True, verbose_name="URL del endpoint (si aplica)")
 
-
     def __str__(self):
         return self.title
+
 
 class Resource(models.Model):
     RESOURCE_TYPES = (
