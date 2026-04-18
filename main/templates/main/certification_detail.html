@@ -1,0 +1,236 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ certification.title }} - Estudio{% endblock %}
+
+{% block content %}
+<!-- Vincular CSS interactivo para Flashcards -->
+<link rel="stylesheet" href="{% static 'css/flashcards.css' %}">
+
+<div class="container py-5">
+
+    <!-- Cabecera -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h1 class="fw-bold display-5 text-primary">{{ certification.title }}</h1>
+            <p class="lead text-muted">{{ certification.description }}</p>
+            <a href="{% url 'certifications' %}" class="btn btn-outline-secondary mt-2"><i
+                    class="fas fa-arrow-left"></i> Volver a Certificaciones</a>
+        </div>
+        <div class="col-md-4 text-center">
+            {% if certification.image %}
+            <img src="{{ MEDIA_URL }}{{ certification.image }}" alt="{{ certification.title }}"
+                class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Acordeón de Unidades -->
+    <div class="accordion" id="unitsAccordion">
+        {% for unit in certification.units.all %}
+        <div class="accordion-item shadow-sm mb-4 border-0 rounded overflow-hidden">
+            <h2 class="accordion-header" id="heading{{ unit.id }}">
+                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-bold fs-5 bg-white"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ unit.id }}"
+                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                    aria-controls="collapse{{ unit.id }}">
+                    <i class="fas fa-bookmark text-primary me-2"></i> {{ unit.name }}: {{ unit.title }}
+                </button>
+            </h2>
+
+            <div id="collapse{{ unit.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                aria-labelledby="heading{{ unit.id }}" data-bs-parent="#unitsAccordion">
+                <div class="accordion-body bg-light p-4">
+
+                    <!-- Resumen de Unidad -->
+                    {% if unit.summary %}
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm border-start border-4 border-primary">
+                        <h6 class="fw-bold text-primary mb-2"><i class="fas fa-info-circle"></i> Resumen de la Unidad
+                        </h6>
+                        <p class="mb-0 text-muted" style="line-height: 1.6;">{{ unit.summary }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="row gy-4">
+                        <!-- VIDEO -->
+                        <div class="col-xl-7 col-lg-6">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-white fw-bold py-3"><i
+                                        class="fas fa-play-circle text-danger me-2"></i> Video de la Unidad</div>
+                                <div class="card-body p-0 d-flex flex-column justify-content-center bg-white"
+                                    style="min-height: 250px;">
+                                    {% if unit.video_url %}
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="{{ unit.video_url }}" title="YouTube video" allowfullscreen
+                                            style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;"></iframe>
+                                    </div>
+                                    {% else %}
+                                    <div class="text-center text-muted p-4">
+                                        <i class="fas fa-video-slash fa-3x mb-3 text-light"></i><br>No hay video
+                                        asociado.
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FLASHCARDS -->
+                        <div class="col-xl-5 col-lg-6">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-white fw-bold py-3"><i
+                                        class="fas fa-layer-group text-primary me-2"></i> Tarjetas Interactivas</div>
+                                <div class="card-body text-center bg-light d-flex flex-column justify-content-center">
+                                    {% if unit.flashcards.count > 0 %}
+                                    <!-- Componente 3D Flashcard -->
+                                    <div class="flashcard-container mb-2" id="fc-container-{{ unit.id }}"
+                                        onclick="flipCard('{{ unit.id }}')" style="height: 260px;">
+                                        <div class="flashcard-inner" id="fc-inner-{{ unit.id }}">
+                                            <div class="flashcard-front px-3 py-4 shadow-sm">
+                                                <h5 id="fc-question-{{ unit.id }}" class="mb-4 text-dark"
+                                                    style="line-height: 1.4;">Cargando...</h5>
+                                                <div class="flip-hint justify-content-center"><i
+                                                        class="fas fa-hand-pointer"></i> Toca para ver respuesta</div>
+                                            </div>
+                                            <div
+                                                class="flashcard-back px-3 py-4 d-flex align-items-center justify-content-center shadow-sm">
+                                                <p id="fc-answer-{{ unit.id }}" class="mb-4"
+                                                    style="line-height: 1.4; font-size: 1.1rem;">Cargando...</p>
+                                                <div class="flip-hint text-white-50 justify-content-center"><i
+                                                        class="fas fa-undo"></i> Tocar para volver</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Controles Inferiores -->
+                                    <div class="flashcard-controls mt-2">
+                                        <button class="btn btn-outline-primary btn-sm rounded-circle shadow-sm"
+                                            style="width: 35px; height: 35px;" onclick="prevCard('{{ unit.id }}')"><i
+                                                class="fas fa-chevron-left"></i></button>
+                                        <span id="flashcard-counter-{{ unit.id }}" class="mx-3 fw-bold text-secondary"
+                                            style="font-size: 0.95rem;">1 / X</span>
+                                        <button class="btn btn-primary btn-sm rounded-circle shadow-sm"
+                                            style="width: 35px; height: 35px;" onclick="nextCard('{{ unit.id }}')"><i
+                                                class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                    {% else %}
+                                    <div class="p-4 text-center text-muted">
+                                        <i class="fas fa-inbox fa-3x mb-3 text-light"></i>
+                                        <h6>No hay tarjetas asociadas a esta unidad.</h6>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLIDES PARA ESTA UNIDAD -->
+                    {% if unit.slides.count > 0 %}
+                    <div class="mt-4 bg-white rounded shadow-sm border p-3">
+                        <h6 class="fw-bold mb-3"><i class="fas fa-file-pdf text-danger me-2"></i> Material Descargable
+                        </h6>
+                        <div class="list-group list-group-flush">
+                            {% for slide in unit.slides.all %}
+                            <a href="{{ MEDIA_URL }}{{ slide.pdf_file }}" target="_blank"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <h6 class="mb-1 text-dark fw-bold">{{ slide.title }}</h6>
+                                    <small class="text-muted">Diapositivas de la unidad</small>
+                                </div>
+                                <span class="btn btn-sm btn-outline-danger px-3 rounded-pill"><i
+                                        class="fas fa-download me-1"></i> PDF</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+            <h3>No hay unidades subidas aún.</h3>
+            <p class="text-muted">Pronto se agregarán nuevas unidades a esta certificación.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Lógica JavaScript para las Flashcards por Unidad -->
+<script>
+    const allFlashcards = {
+        {% for unit in certification.units.all %}
+    "{{ unit.id }}": [
+        {% for fc in unit.flashcards.all %}
+    {
+        "question": "{{ fc.question|escapejs }}",
+            "answer": "{{ fc.answer|escapejs }}"
+    } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+            ]{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    };
+
+    // Estado individual por unidad
+    const unitStates = {};
+    Object.keys(allFlashcards).forEach(uid => {
+        unitStates[uid] = 0;
+    });
+
+    function updateCardUi(unitId) {
+        const data = allFlashcards[unitId];
+        const idx = unitStates[unitId];
+
+        if (!data || data.length === 0) return;
+
+        const container = document.getElementById(`fc-container-${unitId}`);
+        const questionEl = document.getElementById(`fc-question-${unitId}`);
+        const answerEl = document.getElementById(`fc-answer-${unitId}`);
+        const counterEl = document.getElementById(`flashcard-counter-${unitId}`);
+        const total = data.length;
+
+        // Remover flip temporalmente
+        if (container) container.classList.remove('is-flipped');
+
+        setTimeout(() => {
+            if (questionEl) questionEl.innerText = data[idx].question;
+            if (answerEl) answerEl.innerText = data[idx].answer;
+            if (counterEl) counterEl.innerText = `${idx + 1} / ${total}`;
+        }, 150);
+    }
+
+    function flipCard(unitId) {
+        const container = document.getElementById(`fc-container-${unitId}`);
+        if (container) container.classList.toggle('is-flipped');
+    }
+
+    function nextCard(unitId) {
+        if (event) event.stopPropagation();
+        if (unitStates[unitId] < allFlashcards[unitId].length - 1) {
+            unitStates[unitId]++;
+        } else {
+            unitStates[unitId] = 0; // Volver al inicio 
+        }
+        updateCardUi(unitId);
+    }
+
+    function prevCard(unitId) {
+        if (event) event.stopPropagation();
+        if (unitStates[unitId] > 0) {
+            unitStates[unitId]--;
+            updateCardUi(unitId);
+        }
+    }
+
+    // Inicializar visualización de las primeras tarjetas al cargar la página
+    document.addEventListener("DOMContentLoaded", () => {
+        Object.keys(allFlashcards).forEach(uid => {
+            if (allFlashcards[uid] && allFlashcards[uid].length > 0) {
+                updateCardUi(uid);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

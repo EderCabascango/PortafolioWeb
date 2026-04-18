@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Certificaciones - Wladimir Cabascango{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center fw-bold mb-5">Mis Certificaciones y Guías de Estudio</h1>
+    <div class="row gy-4">
+        {% for cert in certifications %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100 d-flex flex-row align-items-center p-2">
+                <!-- Imagen lateral -->
+                <div class="flex-shrink-0" style="width: 100px; height: 100px; overflow: hidden; border-radius: 10px;">
+                    {% if cert.image %}
+                    <img src="{{ MEDIA_URL }}{{ cert.image }}" alt="{{ cert.title }}"
+                        class="img-fluid h-100 w-100 object-fit-cover">
+                    {% else %}
+                    <img src="{% static 'images/project_placeholder.png' %}" alt="{{ cert.title }}"
+                        class="img-fluid h-100 w-100 object-fit-cover">
+                    {% endif %}
+                </div>
+
+                <!-- Contenido -->
+                <div class="flex-grow-1 ms-3 d-flex flex-column justify-content-between">
+                    <h6 class="fw-bold mb-1">{{ cert.title }}</h6>
+                    <p class="small text-muted mb-2">{{ cert.description|truncatewords:15 }}</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'certification_detail' cert.id %}" class="btn btn-primary btn-sm w-100 mb-2">Ir
+                            a material de estudio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center w-100">No hay certificaciones publicadas aún.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -38,6 +38,14 @@ migrations/__pycache__/
 migrations/*.pyc
 
 # =============================
+# FRONTEND (React/Vite)
+# =============================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+.eslintcache
+
+# =============================
 # OTROS
 # =============================
 *.bak

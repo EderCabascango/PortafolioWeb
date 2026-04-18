@@ -4,6 +4,12 @@ import os
 from pathlib import Path
 
 # ==============================
+# DISPOSITIVO GLOBAL
+# ==============================
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+
+# ==============================
 # DEFINICIÓN DEL MODELO
 # ==============================
 class LSTMModel(nn.Module):
@@ -49,6 +55,7 @@ def get_model():
             dropout=checkpoint.get("dropout", 0.2),
         )
         model.load_state_dict(checkpoint["model_state_dict"])
+        model.to(device)
         model.eval()
 
         _model_cache = model

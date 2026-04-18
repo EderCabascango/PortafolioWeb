@@ -13,7 +13,7 @@
                 <!-- Imagen lateral -->
                 <div class="flex-shrink-0" style="width: 100px; height: 100px; overflow: hidden; border-radius: 10px;">
                     {% if project.image %}
-                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid h-100 w-100 object-fit-cover">
+                        <img src="{{ MEDIA_URL }}{{ project.image }}" alt="{{ project.title }}" class="img-fluid h-100 w-100 object-fit-cover">
                     {% else %}
                         <img src="{% static 'images/project_placeholder.png' %}" alt="{{ project.title }}" class="img-fluid h-100 w-100 object-fit-cover">
                     {% endif %}

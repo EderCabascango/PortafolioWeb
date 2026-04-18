@@ -9,11 +9,13 @@
     <div class="container">
         <div class="row align-items-center">
             <!-- Imagen -->
-            <div class="col-md-6 mb-4">
+            <div class="col-md-5 mb-4 mb-md-0 d-flex align-items-center justify-content-center">
                 {% if project.image %}
-                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded shadow-sm">
+                <img src="{{ MEDIA_URL }}{{ project.image }}" alt="{{ project.title }}"
+                    class="img-fluid rounded shadow-sm">
                 {% else %}
-                    <img src="{% static 'images/project_placeholder.png' %}" alt="{{ project.title }}" class="img-fluid rounded shadow-sm">
+                <img src="{% static 'images/project_placeholder.png' %}" alt="{{ project.title }}"
+                    class="img-fluid rounded shadow-sm">
                 {% endif %}
             </div>
 
@@ -27,7 +29,7 @@
                 <h5>🧰 Herramientas:</h5>
                 <ul class="list-inline mb-3">
                     {% for tool in project.tools_list %}
-                        <li class="list-inline-item badge bg-primary text-light">{{ tool }}</li>
+                    <li class="list-inline-item badge bg-primary text-light">{{ tool }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
@@ -37,7 +39,7 @@
                 <h5>🏷️ Tags:</h5>
                 <ul class="list-inline mb-3">
                     {% for tag in project.tags_list %}
-                        <li class="list-inline-item badge bg-secondary">{{ tag }}</li>
+                    <li class="list-inline-item badge bg-secondary">{{ tag }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
@@ -45,19 +47,19 @@
                 <!-- Enlaces -->
                 <div class="mt-4">
                     {% if project.github_link %}
-                        <a href="{{ project.github_link }}" target="_blank" class="btn btn-dark mx-1">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
+                    <a href="{{ project.github_link }}" target="_blank" class="btn btn-dark mx-1">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
                     {% endif %}
                     {% if project.demo_link %}
-                        <a href="{{ project.demo_link }}" target="_blank" class="btn btn-outline-primary mx-1">
-                            <i class="fas fa-external-link-alt"></i> Demo Externo
-                        </a>
+                    <a href="{{ project.demo_link }}" target="_blank" class="btn btn-outline-primary mx-1">
+                        <i class="fas fa-external-link-alt"></i> Demo Externo
+                    </a>
                     {% endif %}
                     {% if project.has_demo %}
-                        <a href="{% url 'project_demo' project.id %}" class="btn btn-primary mx-1">
-                            <i class="fas fa-robot"></i> Probar Demo
-                        </a>
+                    <a href="{% url 'project_demo' project.id %}" class="btn btn-primary mx-1">
+                        <i class="fas fa-robot"></i> Probar Demo
+                    </a>
                     {% endif %}
                 </div>
             </div>

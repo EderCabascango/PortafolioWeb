@@ -15,4 +15,6 @@ urlpatterns = [
     path('api/', include('main.api.urls')),
     path('project/<int:project_id>/demo/', views.project_demo, name='project_demo'),
     path('aboutme/', views.aboutme, name='aboutme'),
+    path('certifications/', views.certifications, name='certifications'),
+    path('certification/<int:cert_id>/', views.certification_detail, name='certification_detail'),
 ]

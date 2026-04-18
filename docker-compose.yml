@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: portafolio_db
+    environment:
+      POSTGRES_DB: portafolio_db
+      POSTGRES_USER: wladi
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    container_name: portafolio_backend
+    command: gunicorn portafolio.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=portafolio_db
+      - DB_USER=wladi
+      - DB_PASSWORD=mysecretpassword
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DEBUG=True # Cambiar a False en prod real
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.react
+    container_name: portafolio_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

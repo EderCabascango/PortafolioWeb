@@ -1,4 +1,6 @@
 from django.db import models
+import csv
+import io
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
@@ -56,3 +58,55 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+# ==============================
+# MODELOS DE CERTIFICACIÓN
+# ==============================
+
+class Certification(models.Model):
+    title = models.CharField(max_length=200, help_text="Ej: Microsoft DP-100")
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='certifications/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+class CertUnit(models.Model):
+    certification = models.ForeignKey(Certification, related_name='units', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, help_text="Ej. Unidad 1")
+    title = models.CharField(max_length=200, help_text="Tema de la unidad")
+    summary = models.TextField(blank=True, null=True, help_text="Resumen del tema abordado en la unidad")
+    video_url = models.URLField(blank=True, null=True, help_text="Enlace de YouTube u otra plataforma para embeber (uno por unidad)")
+    flashcards_csv = models.FileField(upload_to='temp_csv/', blank=True, null=True, help_text="Sube un CSV con columnas (pregunta, respuesta) para auto-generar tarjetas al guardar en esta unidad.")
+    order = models.PositiveIntegerField(default=0, help_text="Orden de visualización para la certificación")
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.certification.title} - {self.name}"
+
+class CertSlide(models.Model):
+    unit = models.ForeignKey(CertUnit, related_name='slides', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    pdf_file = models.FileField(upload_to='cert_slides/')
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+class CertFlashcard(models.Model):
+    unit = models.ForeignKey(CertUnit, related_name='flashcards', on_delete=models.CASCADE)
+    question = models.TextField(help_text="Pregunta de la tarjeta")
+    answer = models.TextField(help_text="Respuesta de la tarjeta")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Tarjeta: {self.question[:50]}..."

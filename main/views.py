@@ -1,28 +1,25 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Project, BlogPost, Book
+from .models import Project, BlogPost, Book, Certification
 import markdown
 from django.http import JsonResponse
-from .api.model_loader import get_model
+from .api.model_loader import get_model as base_get_model, device
 import json
+import ast
 
 # =======================================
 # VARIABLES GLOBALES CONTROLADAS
 # =======================================
 _model = None
-_device = None
 
 # ==============================
 # FUNCIONES DE UTILIDAD
 # ==============================
 def get_model():
     """Carga el modelo sólo si aún no está cargado (lazy load)."""
-    global _model, _device
+    global _model
     if _model is None:
         print("⚡ Cargando modelo LSTM por primera vez...")
-        import torch
-        _device = "cuda" if torch.cuda.is_available() else "cpu"
-        _model = get_model()
-        _model.to(_device)
+        _model = base_get_model()
     return _model
 
 # ==============================
@@ -70,6 +67,18 @@ def book_detail(request, book_id):
 
 def aboutme(request):
     return render(request, 'main/aboutme.html')
+
+# ==============================
+# CERTIFICACIONES Y GUÍAS (DP-100)
+# ==============================
+def certifications(request):
+    certs = Certification.objects.all().order_by('-created_at')
+    return render(request, 'main/certifications.html', {'certifications': certs})
+
+def certification_detail(request, cert_id):
+    cert = get_object_or_404(Certification, id=cert_id)
+    # Seleccionaremos videos, slides y flashcards relacionados en el template via cert.videos.all, cert.slides.all, cert.flashcards.all
+    return render(request, 'main/certification_detail.html', {'certification': cert})
 # ==============================
 # PREDICCIÓN CON LSTM
 # ==============================
@@ -85,11 +94,14 @@ def predict_view(request):
                 raw_data = json.loads(request.body).get("sequence")
 
             if isinstance(raw_data, str):
-                sequence = eval(raw_data)  
+                try:
+                    sequence = json.loads(raw_data)
+                except json.JSONDecodeError:
+                    sequence = ast.literal_eval(raw_data)
             else:
                 sequence = raw_data
 
-            x_input = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0).to(_device)
+            x_input = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0).to(device)
             with torch.no_grad():
                 prediction = model(x_input).item()
 

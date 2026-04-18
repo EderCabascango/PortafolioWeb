@@ -1,10 +1,13 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
+from .serializers import ProjectSerializer, BlogPostSerializer, BookSerializer, CertificationSerializer
+from main.models import Project, BlogPost, Book, Certification
 import pandas as pd
 import json
 import torch
 import time
-from .model_loader import get_model    # ✅ usamos get_model en lugar de load_model
+from .model_loader import get_model, device    # ✅ usamos get_model en lugar de load_model
 from ..logger import logger  
 
 
@@ -23,7 +26,7 @@ def predict_lstm(request):
                 return JsonResponse({"error": "No sequence provided"}, status=400)
 
             # Convertimos la secuencia a tensor
-            x = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0)
+            x = torch.tensor(sequence, dtype=torch.float32).unsqueeze(0).to(device)
 
             # ⚡ Carga diferida del modelo
             model = get_model()
@@ -75,7 +78,7 @@ def predict_csv(request):
 
             with torch.no_grad():
                 for i in range(len(tensor_data) - 28):  # ventana de 28
-                    seq = tensor_data[i:i+28].unsqueeze(0)
+                    seq = tensor_data[i:i+28].unsqueeze(0).to(device)
                     pred = model(seq).item()
                     preds.append(pred)
 
@@ -98,3 +101,40 @@ def health_check(request):
     Ideal para monitoreo en Render.
     """
     return JsonResponse({"status": "ok"})
+
+
+# ==========================================
+# DRF REST API VIEWS FOR PROTFOLIO & CERTIFICATIONS
+# ==========================================
+
+class ProjectList(generics.ListAPIView):
+    queryset = Project.objects.all().order_by('-created_at')
+    serializer_class = ProjectSerializer
+
+class ProjectDetail(generics.RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+class BlogPostList(generics.ListAPIView):
+    queryset = BlogPost.objects.all().order_by('-created_at')
+    serializer_class = BlogPostSerializer
+
+class BlogPostDetail(generics.RetrieveAPIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+
+class BookList(generics.ListAPIView):
+    queryset = Book.objects.all().order_by('-created_at')
+    serializer_class = BookSerializer
+
+class BookDetail(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+class CertificationList(generics.ListAPIView):
+    queryset = Certification.objects.all().order_by('-created_at')
+    serializer_class = CertificationSerializer
+
+class CertificationDetail(generics.RetrieveAPIView):
+    queryset = Certification.objects.all()
+    serializer_class = CertificationSerializer
